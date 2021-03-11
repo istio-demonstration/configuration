@@ -22,7 +22,7 @@ pipeline {
 
       stage('apply configuration') {
           steps {
-                  sh 'kubectl apply -f .'
+                  sh 'kubectl apply -f addons'
                 }
       }
    }
