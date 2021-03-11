@@ -11,7 +11,7 @@ spec:
       name: http
       protocol: HTTP
     hosts:
-    - "chatroom365.com"  # Domain name of the external website
+    - "www.chatroom365.com"  # Domain name of the external website
     - "jenkins.chatroom365.com"
     - "api.chatroom365.com"
 ---
@@ -22,7 +22,7 @@ metadata:
   namespace: default
 spec:
   hosts:      # which incoming host are we applying the proxy rules to???
-    - "chatroom365.com" # Copy the value in the gateway hosts - usually a Domain Name
+    - "www.chatroom365.com" # Copy the value in the gateway hosts - usually a Domain Name
   gateways:
     - ingress-gateway-configuration
   http:
