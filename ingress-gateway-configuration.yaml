@@ -1,0 +1,88 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: ingress-gateway-configuration
+spec:
+  selector:
+    istio: ingressgateway # use Istio default gateway implementation
+  servers:
+  - port:
+      number: 8080
+      name: http
+      protocol: HTTP
+    hosts:
+    - "chatroom365.com"  # Domain name of the external website
+    - "jenkins.chatroom365.com"
+---
+kind: VirtualService
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: web-app
+  namespace: default
+spec:
+  hosts:      # which incoming host are we applying the proxy rules to???
+    - "chatroom365.com" # Copy the value in the gateway hosts - usually a Domain Name
+  gateways:
+    - ingress-gateway-configuration
+  http:
+    - route:
+        - destination:
+            host: web-app
+            subset: original
+          weight: 90
+        - destination:
+            host: web-app
+            subset: experimental
+          weight: 10
+---
+kind: VirtualService
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: jenkins
+  namespace: default
+spec:
+  hosts:      # which incoming host are we applying the proxy rules to???
+    - "jenkins.chatroom365.com" # Copy the value in the gateway hosts - usually a Domain Name
+  gateways:
+    - ingress-gateway-configuration
+  http:
+    - route:
+        - destination:
+            host: jenkins
+            subset: original
+          weight: 100
+        - destination:
+            host: jenkins
+            subset: experimental
+          weight: 0
+
+---
+kind: DestinationRule
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: web-app
+  namespace: default
+spec:
+  host: web-app
+  subsets:
+    - labels:
+        version: original
+      name: original
+    - labels:
+        version: experimental
+      name: experimental
+---
+kind: DestinationRule
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: jenkins
+  namespace: default
+spec:
+  host: jenkins
+  subsets:
+    - labels:
+        version: original
+      name: original
+    - labels:
+        version: experimental
+      name: experimental
