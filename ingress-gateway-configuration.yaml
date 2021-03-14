@@ -9,11 +9,11 @@ spec:
     istio: ingressgateway 
   servers:
   - port:
-      number: 8080
+      number: 80
       name: tcp
       protocol: TCP
     hosts:
-    - "*"
+    - "postgres.chatroom365.com"
 
 ---
 
@@ -24,18 +24,16 @@ metadata:
   namespace: default
 spec:
   hosts:      # which incoming host are we applying the proxy rules to???
-    - "*" 
+    - "postgres.chatroom365.com" 
   gateways:
     - postgres-gateway
   tcp:
-   - route:
-       - destination:
-           host: postgres-db.default.svc.cluster.local
-           port: 
-             number: 5432
-           subset: original
-         weight: 100
-
+  - route:
+    - destination:
+        host: postgres-db.default.svc.cluster.local
+        port: 
+          number: 5432
+        subset: original
 ---
 kind: DestinationRule
 apiVersion: networking.istio.io/v1alpha3
@@ -49,23 +47,92 @@ spec:
         version: original
       name: original
 ---
+# Gateway for kiali
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: kiali-gateway
+  namespace: istio-system
+spec:
+  selector:
+    istio: ingressgateway 
+  servers:
+  - port:
+      number: 8080
+      name: http
+      protocol: HTTP
+    hosts:
+    - "kiali.chatroom365.com"
+
+---
+
+# virtualService for kiali 
+kind: VirtualService
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: kiali
+  namespace: istio-system
+spec:
+  hosts:      # which incoming host are we applying the proxy rules to???
+    - "kiali.chatroom365.com" # Copy the value in the gateway hosts - usually a Domain Name
+  gateways:
+    - kiali-gateway
+  http:
+    - route:
+        - destination:
+            host: kiali.istio-system.svc.cluster.local
+            port:
+              number: 20001
+            subset: kialiapp
+          weight: 100
+
+---
+# DestinationRule for kiali
+kind: DestinationRule
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: kiali
+  namespace: istio-system
+spec:
+  host: kiali.istio-system.svc.cluster.local
+  subsets:
+    - labels:
+        app: kiali
+      name: kialiapp
+
+
+
+
+
+---
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
   name: ingress-gateway-configuration
+  namespace: default
 spec:
   selector:
     istio: ingressgateway # use Istio default gateway implementation
   servers:
   - port:
-      number: 80
-      name: http
+      number: 8080
+      name: webapp-http
       protocol: HTTP
     hosts:
-    - "www.chatroom365.com"  # Domain name of the external website
-    - "jenkins.chatroom365.com"
+    - "www.chatroom365.com"
+  - port:
+      number: 8080
+      name: jenkins-http
+      protocol: HTTP
+    hosts:
+    - "jenkins.chatroom365.com"  
+  - port:
+      number: 8080
+      name: api-http
+      protocol: HTTP
+    hosts:
     - "api.chatroom365.com"
-    - "kiali.chatroom365.com"
+
 
 ---
 kind: VirtualService
@@ -144,39 +211,7 @@ spec:
         version: experimental
       name: experimental
 ---
-# for kiali
-kind: VirtualService
-apiVersion: networking.istio.io/v1alpha3
-metadata:
-  name: kiali
-  namespace: default
-spec:
-  hosts:      # which incoming host are we applying the proxy rules to???
-    - "kiali.chatroom365.com" # Copy the value in the gateway hosts - usually a Domain Name
-  gateways:
-    - ingress-gateway-configuration
-  http:
-    - route:
-        - destination:
-            host: kiali.istio-system.svc.cluster.local
-            port:
-              number: 20001
-          weight: 100
 
----
-kind: DestinationRule
-apiVersion: networking.istio.io/v1alpha3
-metadata:
-  name: kiali
-  namespace: default
-spec:
-  host: kiali.istio-system.svc.cluster.local
-  subsets:
-    - labels:
-        app: kiali
-      name: kialiapp
-
----
 
 kind: VirtualService
 apiVersion: networking.istio.io/v1alpha3
@@ -213,4 +248,6 @@ spec:
     - labels:
         version: experimental
       name: experimental
+---
+
 
