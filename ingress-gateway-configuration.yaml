@@ -1,51 +1,51 @@
 # geteway for postgres
-apiVersion: networking.istio.io/v1alpha3
-kind: Gateway
-metadata:
-  name: postgres-gateway
-  namespace: default
-spec:
-  selector:
-    istio: ingressgateway 
-  servers:
-  - port:
-      number: 80
-      name: tcp
-      protocol: TCP
-    hosts:
-    - "postgres.chatroom365.com"
+# apiVersion: networking.istio.io/v1alpha3
+# kind: Gateway
+# metadata:
+#   name: postgres-gateway
+#   namespace: default
+# spec:
+#   selector:
+#     istio: ingressgateway 
+#   servers:
+#   - port:
+#       number: 80
+#       name: tcp
+#       protocol: TCP
+#     hosts:
+#     - "postgres.chatroom365.com"
 
----
+# ---
 
-kind: VirtualService
-apiVersion: networking.istio.io/v1alpha3
-metadata:
-  name: postgres-db
-  namespace: default
-spec:
-  hosts:      # which incoming host are we applying the proxy rules to???
-    - "postgres.chatroom365.com" 
-  gateways:
-    - postgres-gateway
-  tcp:
-  - route:
-    - destination:
-        host: postgres-db.default.svc.cluster.local
-        port: 
-          number: 5432
-        subset: original
----
-kind: DestinationRule
-apiVersion: networking.istio.io/v1alpha3
-metadata:
-  name: postgres-db
-  namespace: default
-spec:
-  host: postgres-db.default.svc.cluster.local
-  subsets:
-    - labels:
-        version: original
-      name: original
+# kind: VirtualService
+# apiVersion: networking.istio.io/v1alpha3
+# metadata:
+#   name: postgres-db
+#   namespace: default
+# spec:
+#   hosts:      # which incoming host are we applying the proxy rules to???
+#     - "postgres.chatroom365.com" 
+#   gateways:
+#     - postgres-gateway
+#   tcp:
+#   - route:
+#     - destination:
+#         host: postgres-db.default.svc.cluster.local
+#         port: 
+#           number: 5432
+#         subset: original
+# ---
+# kind: DestinationRule
+# apiVersion: networking.istio.io/v1alpha3
+# metadata:
+#   name: postgres-db
+#   namespace: default
+# spec:
+#   host: postgres-db.default.svc.cluster.local
+#   subsets:
+#     - labels:
+#         version: original
+#       name: original
 ---
 # Gateway for kiali
 apiVersion: networking.istio.io/v1alpha3
@@ -58,7 +58,7 @@ spec:
     istio: ingressgateway 
   servers:
   - port:
-      number: 8080
+      number: 80
       name: http
       protocol: HTTP
     hosts:
@@ -115,23 +115,19 @@ spec:
     istio: ingressgateway # use Istio default gateway implementation
   servers:
   - port:
-      number: 8080
+      number: 80
       name: webapp-http
       protocol: HTTP
     hosts:
     - "www.chatroom365.com"
-  - port:
-      number: 8080
-      name: jenkins-http
-      protocol: HTTP
-    hosts:
-    - "jenkins.chatroom365.com"  
-  - port:
-      number: 8080
-      name: api-http
-      protocol: HTTP
-    hosts:
+    - "jenkins.chatroom365.com" 
     - "api.chatroom365.com"
+  - port:
+      number: 5432
+      name: postgres-tcp
+      protocol: TCP
+    hosts:
+    - "*"
 
 
 ---
@@ -250,4 +246,35 @@ spec:
       name: experimental
 ---
 
+kind: VirtualService
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: postgres-db
+  namespace: default
+spec:
+  hosts:      # which incoming host are we applying the proxy rules to???
+    - "*" 
+  gateways:
+    - ingress-gateway-configuration
+  tcp:
+  - match:
+      - port: 5432
+    route:
+    - destination:
+        host: postgres-db.default.svc.cluster.local
+        port: 
+          number: 5432
+ #       subset: original
+---
+# kind: DestinationRule
+# apiVersion: networking.istio.io/v1alpha3
+# metadata:
+#   name: postgres-db
+#   namespace: default
+# spec:
+#   host: postgres-db.default.svc.cluster.local
+#   subsets:
+#     - labels:
+#         version: original
+#       name: original
 
