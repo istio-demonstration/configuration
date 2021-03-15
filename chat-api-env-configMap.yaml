@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: data-configuration
+  namespace: default
+data:
+  database.connectionstring: "User ID=postgres;Password=P@SSW0rd1;Host=postgres-db;Port=5432;Database=chat;Pooling=true;Min Pool Size=0;Max Pool Size=100;Connection Lifetime=0;"
+  database.password: "P@SSW0rd1"
+  cloudinarysettings.cloudname: "dhmbxvlld"
+  cloudinarysettings.apikey: "762965946552442"
+  cloudinarysettings.apisecret: "ePXOkCyUz6Z5dPwZmzWIj_E-zrM"
+  tokenkey: "secret token key"
+  
