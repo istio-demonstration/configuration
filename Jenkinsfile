@@ -22,7 +22,7 @@ pipeline {
 
       stage('apply configuration') {
           steps {
-                  sh 'kubectl apply -f addons'
+                 // sh 'kubectl apply -f addons'
                   sh 'kubectl apply -f ingress-gateway-configuration.yaml'
                 }
       }

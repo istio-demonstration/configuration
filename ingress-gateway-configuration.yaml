@@ -175,10 +175,14 @@ spec:
     - route:
         - destination:
             host: jenkins.default.svc.cluster.local
+            port: 
+              number: 8080
             subset: original
           weight: 100
         - destination:
             host: jenkins.default.svc.cluster.local
+            port: 
+              number: 8080
             subset: experimental
           weight: 0
 ---
@@ -214,13 +218,13 @@ spec:
         - destination:
             host: chat-api.default.svc.cluster.local
             port: 
-              number: 8080
+              number: 5000
             subset: original
           weight: 100
         - destination:
             host: chat-api.default.svc.cluster.local
             port: 
-              number: 8080  
+              number: 5000 
             subset: experimental
           weight: 0
 ---
