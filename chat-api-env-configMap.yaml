@@ -4,7 +4,7 @@ metadata:
   name: data-configuration
   namespace: default
 data:
-  database.connectionstring: "User ID=postgres;Password=P@SSW0rd1;Host=postgres-db;Port=5432;Database=chat;Pooling=true;Min Pool Size=0;Max Pool Size=100;Connection Lifetime=0;"
+  database.connectionstring: "User ID=postgres;Password=P@SSW0rd1;Host=postgres-db;Port=5432;Database=chat;Pooling=true;"
   database.password: "P@SSW0rd1"
   cloudinarysettings.cloudname: "dhmbxvlld"
   cloudinarysettings.apikey: "762965946552442"
