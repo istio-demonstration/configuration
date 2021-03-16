@@ -213,10 +213,14 @@ spec:
     - route:
         - destination:
             host: chat-api.default.svc.cluster.local
+            port: 
+              number: 8080
             subset: original
           weight: 100
         - destination:
             host: chat-api.default.svc.cluster.local
+            port: 
+              number: 8080  
             subset: experimental
           weight: 0
 ---
