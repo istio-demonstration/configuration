@@ -5,7 +5,7 @@ metadata:
   namespace: default
 ---
 kind: Role
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: jenkins
   namespace: default
@@ -31,7 +31,7 @@ rules:
 
 
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: jenkins
@@ -118,49 +118,49 @@ spec:
       serviceAccountName: jenkins
 ---
 # experimental
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: jenkins-experimental
-  namespace: default
-spec:
-  selector:
-    matchLabels:
-      app: jenkins
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: jenkins
-        version: experimental
-    spec:
-      containers:
-        - name: jenkins
-          image: 839928622/jenkins:latest
-          env:
-            - name: JAVA_OPTS
-              value: -Djenkins.install.runSetupWizard=false
-          ports:
-            - name: http-port
-              containerPort: 8080
-            - name: jnlp-port
-              containerPort: 50000
-          volumeMounts:
-            - name: jenkins-home
-              mountPath: /var/jenkins_home
-            - name: docker-sock-volume
-              mountPath: "/var/run/docker.sock"
-          imagePullPolicy: IfNotPresent
-      volumes:
-        # This allows jenkins to use the docker daemon on the host, for running builds
-        # see https://stackoverflow.com/questions/27879713/is-it-ok-to-run-docker-from-inside-docker
-        - name: docker-sock-volume
-          hostPath:
-            path: /var/run/docker.sock
-        - name: jenkins-home
-          hostPath:
-            path: /mnt/jenkins-store
-      serviceAccountName: jenkins
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: jenkins-experimental
+#   namespace: default
+# spec:
+#   selector:
+#     matchLabels:
+#       app: jenkins
+#   replicas: 1
+#   template:
+#     metadata:
+#       labels:
+#         app: jenkins
+#         version: experimental
+#     spec:
+#       containers:
+#         - name: jenkins
+#           image: 839928622/jenkins:latest
+#           env:
+#             - name: JAVA_OPTS
+#               value: -Djenkins.install.runSetupWizard=false
+#           ports:
+#             - name: http-port
+#               containerPort: 8080
+#             - name: jnlp-port
+#               containerPort: 50000
+#           volumeMounts:
+#             - name: jenkins-home
+#               mountPath: /var/jenkins_home
+#             - name: docker-sock-volume
+#               mountPath: "/var/run/docker.sock"
+#           imagePullPolicy: IfNotPresent
+#       volumes:
+#         # This allows jenkins to use the docker daemon on the host, for running builds
+#         # see https://stackoverflow.com/questions/27879713/is-it-ok-to-run-docker-from-inside-docker
+#         - name: docker-sock-volume
+#           hostPath:
+#             path: /var/run/docker.sock
+#         - name: jenkins-home
+#           hostPath:
+#             path: /mnt/jenkins-store
+#       serviceAccountName: jenkins
 ---
 apiVersion: v1
 kind: Service
@@ -170,10 +170,10 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - name: ui
+    - name: http-ui
       port: 8080
       targetPort: 8080
-    - name: jnlp
+    - name: http-jnlp
       port: 50000
   selector:
     app: jenkins
