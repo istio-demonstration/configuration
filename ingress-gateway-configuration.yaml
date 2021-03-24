@@ -18,6 +18,16 @@ spec:
     - "kiali.chatroom365.com"
     - "grafana.chatroom365.com"
     - "tracing.chatroom365.com"
+    tls:
+      httpsRedirect: true
+  - port:
+      number: 443
+      name: https
+      protocol: HTTP
+    hosts:
+    - "kiali.chatroom365.com"
+    - "grafana.chatroom365.com"
+    - "tracing.chatroom365.com"
 ---
 
 # virtualService for kiali 
@@ -112,12 +122,16 @@ spec:
     - "www.chatroom365.com"
     - "jenkins.chatroom365.com" 
     - "api.chatroom365.com"
+    tls:
+      httpsRedirect: true
   - port:
-      number: 5432
-      name: postgres-tcp
-      protocol: TCP
+      number: 443
+      name: https
+      protocol: HTTP
     hosts:
-    - "*"
+    - "www.chatroom365.com"
+    - "jenkins.chatroom365.com" 
+    - "api.chatroom365.com"
 
 
 ---
