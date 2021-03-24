@@ -20,6 +20,7 @@ spec:
     - "tracing.chatroom365.com"
     tls:
       httpsRedirect: true
+      # discussion on https: https://github.com/istio/istio/issues/8638 https://github.com/istio/istio/issues/6566
   - port:
       number: 443
       name: https
