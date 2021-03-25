@@ -28,6 +28,15 @@ rules:
 - apiGroups: [""]
   resources: ["persistentvolumeclaims"]
   verbs: ["create","delete","get","list","patch","update","watch"]
+  # istio virtualservices destinationrules
+- apiGroups: ["networking.istio.io"]
+  resources: ["gateways",virtualservices","destinationrules"]
+  verbs: ["create","delete","get","list","patch","update","watch"]
+- apiGroups: ["networking.istio.io/v1alpha3"]
+  resources: ["gateways",virtualservices","destinationrules"]
+  verbs: ["create","delete","get","list","patch","update","watch"]
+
+
 
 
 ---
