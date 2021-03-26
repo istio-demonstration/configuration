@@ -89,12 +89,20 @@ spec:
               number: 8080
             subset: original
           weight: 100
+          headers:
+            response:
+              set:
+                Strict-Transport-Security: max-age=31536000; includeSubDomains
         - destination:
             host: jenkins.default.svc.cluster.local
             port: 
               number: 8080
             subset: experimental
           weight: 0
+          headers:
+            response:
+              set:
+                Strict-Transport-Security: max-age=31536000; includeSubDomains
 ---
 kind: DestinationRule
 apiVersion: networking.istio.io/v1alpha3
