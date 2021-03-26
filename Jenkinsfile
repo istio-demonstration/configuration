@@ -23,7 +23,8 @@ pipeline {
       stage('apply configuration') {
           steps {
                  // sh 'kubectl apply -f addons'
-                  sh 'kubectl apply -f ingress-gateway-configuration.yaml'
+                  sh 'kubectl apply -f default-ingress-gateway-config.yaml'
+                  sh 'kubectl apply -f istio-system-ingress-gateway-config.yaml'
                 }
       }
    }

@@ -30,11 +30,9 @@ rules:
   verbs: ["create","delete","get","list","patch","update","watch"]
   # istio virtualservices destinationrules
 - apiGroups: ["networking.istio.io"]
-  resources: ["gateways",virtualservices","destinationrules"]
+  resources: ["gateways","virtualservices","destinationrules"]
   verbs: ["create","delete","get","list","patch","update","watch"]
-- apiGroups: ["networking.istio.io/v1alpha3"]
-  resources: ["gateways",virtualservices","destinationrules"]
-  verbs: ["create","delete","get","list","patch","update","watch"]
+
 
 
 
@@ -53,6 +51,7 @@ subjects:
 - kind: ServiceAccount
   name: jenkins
 ---
+# Role vs ClusterRole, role can only operte resources under current namespace, but ClusterRole can do all of namespaces
 # Allows jenkins to create persistent volumes
 # This cluster role binding allows anyone in the "manager" group to read secrets in any namespace.
 kind: ClusterRoleBinding
@@ -80,6 +79,24 @@ rules:
 - apiGroups: ["storage.k8s.io"]
   resources: ["storageclasses"]
   verbs: ["create","delete","get","list","patch","update","watch"]
+- apiGroups: ["networking.istio.io"]
+  resources: ["gateways","virtualservices","destinationrules"]
+  verbs: ["create","delete","get","list","patch","update","watch"]
+- apiGroups: [""]
+  resources: ["pods","services"]
+  verbs: ["create","delete","get","list","patch","update","watch"]
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["create","delete","get","list","patch","update","watch"]
+- apiGroups: [""]
+  resources: ["pods/exec"]
+  verbs: ["create","delete","get","list","patch","update","watch"]
+- apiGroups: [""]
+  resources: ["pods/log"]
+  verbs: ["get","list","watch"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get"]
 ---
 # original
 apiVersion: apps/v1
