@@ -49,10 +49,18 @@ spec:
             host: web-app.default.svc.cluster.local
             subset: original
           weight: 90
+          headers:
+            response:
+              set:
+                Strict-Transport-Security: max-age=31536000; includeSubDomains
         - destination:
             host: web-app.default.svc.cluster.local
             subset: experimental
           weight: 10
+          headers:
+            response:
+              set:
+                Strict-Transport-Security: max-age=31536000; includeSubDomains
 ---
 #load balancing for k8s service:web-app
 kind: DestinationRule
@@ -139,12 +147,20 @@ spec:
               number: 5000
             subset: original
           weight: 100
+          headers:
+            response:
+              set:
+                Strict-Transport-Security: max-age=31536000; includeSubDomains
         - destination:
             host: chat-api.default.svc.cluster.local
             port: 
               number: 5000 
             subset: experimental
           weight: 0
+          headers:
+            response:
+              set:
+                Strict-Transport-Security: max-age=31536000; includeSubDomains
 ---
 kind: DestinationRule
 apiVersion: networking.istio.io/v1alpha3
