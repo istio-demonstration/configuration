@@ -4,8 +4,8 @@ metadata:
   name: data-configuration
   namespace: default
 data:
-  database.connectionstring: "User ID=postgres;Password=P@SSW0rd1;Host=postgres-db;Port=5432;Database=chat;Pooling=true;"
-  database.password: "P@SSW0rd1"
+  database.connectionstring: "Data Source=mssql-db;Initial Catalog=chat;Persist Security Info=True;User ID=sa;Password=yourStrong(!)Password;MultipleActiveResultSets=True"
+  database.password: "yourStrong(!)Password"
   cloudinarysettings.cloudname: "dhmbxvlld"
   cloudinarysettings.apikey: "762965946552442"
   cloudinarysettings.apisecret: "ePXOkCyUz6Z5dPwZmzWIj_E-zrM"

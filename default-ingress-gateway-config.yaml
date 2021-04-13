@@ -44,23 +44,65 @@ spec:
   gateways:
     - ingress-gateway-configuration
   http:
+    - match:
+        - headers:
+            Cookie:
+              exact: release=canary
+      route:
+        - destination:
+            host: web-app.default.svc.cluster.local
+            subset: experimental
+            port:
+              number: 80
+    - match:
+        - headers:
+            Cookie:
+              exact: release=stable
+      route:
+        - destination:
+            host: web-app.default.svc.cluster.local
+            subset: original
+            port:
+              number: 80
     - route:
         - destination:
             host: web-app.default.svc.cluster.local
             subset: original
-          weight: 90
+            port:
+              number: 80
+          weight: 80
           headers:
             response:
-              set:
-                Strict-Transport-Security: max-age=31536000; includeSubDomains
+              add:
+                "Set-Cookie": release=stable; Max-Age=2592000
         - destination:
             host: web-app.default.svc.cluster.local
             subset: experimental
-          weight: 10
+            port:
+              number: 80
+          weight: 20
           headers:
             response:
-              set:
-                Strict-Transport-Security: max-age=31536000; includeSubDomains
+              add:
+                "Set-Cookie": release=canary; Max-Age=2592000  
+  # http:
+  #   - route:
+  #       - destination:
+  #           host: web-app.default.svc.cluster.local
+  #           subset: original
+  #         weight: 90
+  #         headers:
+  #           response:
+  #             set:
+  #               Strict-Transport-Security: max-age=31536000; includeSubDomains
+  #       - destination:
+  #           host: web-app.default.svc.cluster.local
+  #           subset: experimental
+  #         weight: 10
+  #         headers:
+  #           response:
+  #             set:
+  #               Strict-Transport-Security: max-age=31536000; includeSubDomains
 ---
 #load balancing for k8s service:web-app
 kind: DestinationRule
