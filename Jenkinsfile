@@ -24,7 +24,7 @@ pipeline {
           steps {
                  // sh 'kubectl apply -f addons'
                  // sh 'kubectl apply -f chat-api-env-configMap.yaml'
-                  sh 'kubectl delete -f circuit-breaking'
+                  sh 'kubectl apply -f circuit-breaking'
                   sh 'kubectl apply -f default-ingress-gateway-config.yaml'
                   sh 'kubectl apply -f istio-system-ingress-gateway-config.yaml'
                 }
