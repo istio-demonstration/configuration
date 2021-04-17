@@ -3,14 +3,13 @@ kind: DestinationRule
 metadata:
   name: circuit-breaker-for-chat-api
 spec:
-  host: "chat-api.default.svc.cluster.local"          # This is the name of the k8s service that we're configuring
-
+  host: chat-api.default.svc.cluster.local         # This is the name of the k8s service that we're configuring
   trafficPolicy:
     outlierDetection: # Circuit Breakers HAVE TO BE SWITCHED ON
       # default 10% , that's meaning that if a circuit breaker needs to kick in, then it's going to remove 10% of pods from the load balancing.
       maxEjectionPercent: 10
       consecutive5xxErrors: 2
       # default 10s
-      interval: 20s
+      interval: 10s
       # default 30s format: 1h/1m/1s/1ms Must Be >=1ms
       baseEjectionTime: 30s
